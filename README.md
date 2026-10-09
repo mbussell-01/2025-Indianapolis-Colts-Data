@@ -1,0 +1,128 @@
+---
+title: "2025 Indianapolis Colts Data"
+author: "Madisyn Bussell"
+format: 
+  html:
+    toc: true
+    toc-location: left
+---
+
+
+Loading in some things!
+```{Python}
+%pip install joblib
+import joblib
+import pandas as pd
+import matplotlib.pyplot as plt
+```
+
+
+Loading in the 2025 Colts Team Data
+```{python} 
+import joblib
+import pandas as pd
+import matplotlib.pyplot as plt
+
+file_path = '/Users/madisynbussell/Downloads/colts_stats_tables.joblib'
+
+Colts_Data = joblib.load(file_path)
+
+print(Colts_Data[0])
+```
+
+
+1. The Daniel Jones Experiment (Passing Yards per QBs)
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+Names = Colts_Data[0]
+Stats = Colts_Data[1]
+
+Stats.columns = Stats.columns.get_level_values(-1).str.strip()
+Passing_Stats = pd.concat([Names, Stats], axis=1)
+
+QBs = Passing_Stats[Passing_Stats['Name'].str.contains('QB', na=False)].copy()
+QBs['Short_Name'] = QBs['Name'].str.replace(' QB', '').str.replace(' Sr.', '')
+
+number_of_qbs = len(QBs)
+colors = ['blue', 'green', 'yellow', 'darkred'][:number_of_qbs]
+
+plt.bar(QBs['Short_Name'], QBs['YDS'], color=colors)
+
+plt.title('2025 Colts Passing Yards by QB')
+plt.xlabel('QB Name')
+plt.ylabel('Total Passing Yards')
+
+plt.show()
+```
+
+
+2. Who's the best runner? (Rushing Yards per RBs)
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+Names = Colts_Data[2]
+Rushing_Stats = Colts_Data[3]
+
+Rushing_Stats.columns = Rushing_Stats.columns.get_level_values(-1).str.strip()
+
+Rushing_data = pd.concat([Names, Rushing_Stats], axis=1)
+
+Top_Rushers = Rushing_data[Rushing_data['Name'] != 'Total'].head(3)
+
+colors = ['blue', 'green', 'orange'][:len(Top_Rushers)]
+
+plt.bar(Top_Rushers['Name'], Top_Rushers['YDS'], color=colors)
+plt.title('2025 Colts Rushing Yards Leaders')
+plt.xlabel('Player Name')
+plt.ylabel('Total Rushing Yards')
+plt.show()
+```
+
+
+3. Who is the best receiver? (Receiving Yards per WRs)
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+receiver_names = Colts_Data[4]
+receiver_stats = Colts_Data[5]
+receiver_stats.columns = receiver_stats.columns.get_level_values(-1).str.strip()
+df_receiving = pd.concat([receiver_names, receiver_stats], axis=1)
+
+top_receivers = ['Alec Pierce WR', 'Tyler Warren TE', 'Michael Pittman Jr. WR']
+df_top = df_receiving[df_receiving['Name'].isin(top_receivers)]
+
+colors = ['teal', 'magenta', 'gold']
+plt.bar(df_top['Name'], df_top['YDS'], color=colors)
+
+plt.title('2025 Colts Receiving Yards Leaders')
+plt.xlabel('Player Name')
+plt.ylabel('Total Receiving Yards')
+
+plt.show()
+
+```
+
+
+4. Call the Chain Gang (First Downs per Player)
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+players = ['J. Taylor\n(Rushing)', 'M. Pittman Jr.\n(Receiving)', 'T. Warren\n(Receiving)', 'A. Pierce\n(Receiving)']
+first_downs = [84, 47, 42, 41]
+colors = ['green', 'gold', 'magenta', 'teal']
+
+plt.bar(players, first_downs, color=colors)
+
+plt.title('2025 Colts Chain Movers (1st Downs by Player)')
+plt.xlabel('Players')
+plt.ylabel('Number of First Downs')
+
+plt.show()
+```
